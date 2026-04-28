@@ -71,7 +71,7 @@ export default function LocationPage() {
         {/* Lista de Sedes */}
         <div className="md:col-span-1 space-y-4">
           <h1 className="text-3xl font-extrabold text-artisan-primary mb-6">Nuestras Sedes</h1>
-          <div className="space-y-3 overflow-y-auto max-h-[600px] pr-2">
+          <div className="space-y-3 overflow-y-auto max-h-150 pr-2">
             {stores.map((store) => (
               <div
                 key={store.id}
@@ -90,7 +90,7 @@ export default function LocationPage() {
 
         {/* Contenedor del Mapa */}
         <div className="md:col-span-2 space-y-8">
-          <div className="w-full h-[500px] rounded-xl overflow-hidden shadow-2xl border-4 border-white">
+          <div className="w-full h-125 rounded-xl overflow-hidden shadow-2xl border-4 border-white">
             {/* El PROVIDER envuelve al CONTAINER */}
             <APIProvider apiKey={apiKey}>
               <MapContainer currentPos={selectedStore.coords} />
