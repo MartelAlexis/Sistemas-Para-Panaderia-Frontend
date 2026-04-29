@@ -5,7 +5,13 @@ import ProductGrid from "./components/ui/ProductGrid";
 import Subscription from "./components/ui/Subscription";
 import AboutSection from "./pages/public/About";
 import LocationPage from "./pages/public/Location";
-import PastelesPage from "./pages/public/Pasteles";
+import AdminLayout from "./components/layout/AdminLayout";
+import AdminInventory from './pages/admin/Inventory';
+import AdminDashboard from './pages/admin/Dashboard';
+import AdminOrders from './pages/admin/Orders';
+import AdminUsers from './pages/admin/Users';
+import Login from './pages/public/Login'
+import AdminStores from './pages/admin/Stores'
 
 const Home = () => (
   <>
@@ -19,12 +25,22 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="login" element={<Login />}></Route>
+
         <Route path="/" element={<MainLayout />}>
 
           <Route index element={<Home />} />
           <Route path="about" element={<AboutSection />} />
           <Route path="ubicanos" element={<LocationPage />} />
-          <Route path="pasteles" element={<PastelesPage />} />
+
+        </Route>
+        <Route path="/admin" element={<AdminLayout />}>
+
+          <Route index element={<AdminDashboard />} />
+          <Route path="inventory" element={<AdminInventory />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="stores" element={<AdminStores />} />
+          <Route path="users" element={<AdminUsers />} />
 
         </Route>
       </Routes>
