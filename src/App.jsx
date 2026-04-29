@@ -6,6 +6,7 @@ import ProductGrid from "./components/ui/ProductGrid";
 import Subscription from "./components/ui/Subscription";
 import AboutSection from "./pages/public/About";
 import LocationPage from "./pages/public/Location"
+import Postres from './pages/public/Postres';
 
 const Home = () => (
   <>
@@ -24,6 +25,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<AboutSection />} />
           <Route path="ubicanos" element={<LocationPage />} />
+          <Route path="postres" element={<Postres />} />
           {/* Ejemplo de rutas futuras que podrías añadir:
           <Route path="pastries" element={<PastriesPage />} />
           <Route path="contact" element={<ContactPage />} /> 
