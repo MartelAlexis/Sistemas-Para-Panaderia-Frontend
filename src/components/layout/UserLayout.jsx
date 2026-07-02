@@ -14,7 +14,7 @@ export default function UserLayout() {
     const loadUserData = () => {
         const activeUser = getAuthSession();
         if (activeUser && activeUser.firstName) {
-            setUserName(`${activeUser.firstName} ${activeUser.lastName}`);
+            setUserName(`${activeUser.firstName} ${activeUser.lastName || ''}`.trim());
         }
     };
     const handleLogout = () => {
@@ -28,8 +28,13 @@ export default function UserLayout() {
          window.location.reload(); 
     };
     useEffect(() => {
+        const activeUser = getAuthSession();
+        if (!activeUser) {
+            navigate('/login');
+            return;
+        }
         loadUserData();
-    }, []);
+    }, [navigate]);
     return (
         <div className="max-w-7xl mx-auto px-6 pt-32 pb-12 flex flex-col md:flex-row gap-8">
             <aside className="w-full md:w-64 space-y-2">

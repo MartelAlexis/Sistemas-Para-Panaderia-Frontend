@@ -1,151 +1,157 @@
 // src/pages/admin/Inventory.jsx
 import { useState, useEffect } from 'react';
 import ProductModal from '../../components/admin/ProductModal';
-import { pasteles as pastelesCatalog } from '../public/Pasteles';
-import { panesCatalog } from '../../components/ui/ProductGrid';
-
-const postresBase = [
-  {
-    name: "Cheesecake de Fresa",
-    category: "Postres",
-    price: 18,
-    stock: 20,
-    image: "https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/649514282_1541653711294103_4120625557878409919_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=7b2446&_nc_ohc=_8jOzcR3vgIQ7kNvwHIVVAG&_nc_oc=AdrWo1xfl3Q5_JewGEuMbPTlHdaCjD_5l9G5DVBwQ4edURxCXz9CROrM82GK-gNq334&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=E4MCiHLmRAERrrxdhAldEA&_nc_ss=7b2a8&oh=00_Af09nRaFM49k2n-zjor0Rrn_Q5Rp4KX9zLgLsAF0IjoYJQ&oe=69F85025",
-  },
-  {
-    name: "Rolls con Chips de Chocolate",
-    category: "Postres",
-    price: 12.5,
-    stock: 20,
-    image: "https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/619120779_1502410635218411_5840259771253580548_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=7b2446&_nc_ohc=iCGWY-GxdTgQ7kNvwEPSvtX&_nc_oc=AdqamdPq6YbjhSQA2ac_UXVJznE5q8OM4oAPOJtvlbEzv70xumipEr00X-sgYnFQpIs&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=jVSyogjv1T5BklxJq-MIWw&_nc_ss=7b2a8&oh=00_Af2aCZS8CjGhsxNpcv_Umt7SAfjYhYT5qwEftIjjxwUPxA&oe=69F8401B",
-  },
-  {
-    name: "Cañitas de Manjar",
-    category: "Postres",
-    price: 9.5,
-    stock: 20,
-    image: "https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/619285440_1502410648551743_8807975528775788450_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=7b2446&_nc_ohc=BGjAkktAXvsQ7kNvwFCGWu9&_nc_oc=Ado7aSBBlRyaH22xdK-Nei5Ddlwh5RW_TmHoYYhGYRdENJuQPeuBonqddOaxTo2u8XE&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=k5NJJOhEvHmONODEZ2kMwA&_nc_ss=7b2a8&oh=00_Af1-FtLPcoHQuIYZPNAvRZ2UvfnuIRV_UT54ceqVuhg8RQ&oe=69F84A7C",
-  },
-  {
-    name: "Galletas de Mantequilla con Guinda",
-    category: "Postres",
-    price: 11,
-    stock: 20,
-    image: "https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/608849094_1484520380340770_5071488719152032345_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=7b2446&_nc_ohc=N2JFv69e8n4Q7kNvwH4T-yc&_nc_oc=Ado6Zfl5RVB49xB4KpPOtBNbqbENpA3NvRzvI7VGvO5v8bFQCCxMd4xYEj_OfjOnOH8&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=WB8EOZ4TbWS2Bw35HvsAPw&_nc_ss=7b2a8&oh=00_Af1tcx-GzeuRZqEMXf1XcoYL608S7DrGIQO9eunwBrBoYA&oe=69F84D1D",
-  },
-  {
-    name: "Vasos de Postre Surtidos",
-    category: "Postres",
-    price: 7,
-    stock: 20,
-    image: "https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/492756468_1254704973322313_5267312312456129657_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=7b2446&_nc_ohc=Pao4VrQOPCYQ7kNvwEqqGd3&_nc_oc=Adon_MobBW7RHiIKIwylmqWEf6FG-QcwvtW3ksIBxyEZQRC7RRDtaGTQPiCrjNOk8LE&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=IZ1lXnN4Fiv_GL7AseJ9Ww&_nc_ss=7b2a8&oh=00_Af0lqrosY1vJljMjofSevK7YOW8KQytWVLIJ5RWQoCMntw&oe=69F83DCC",
-  },
-  {
-    name: "Copas de Crema y Gelatina",
-    category: "Postres",
-    price: 13,
-    stock: 20,
-    image: "https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/662591386_1566583222134485_1736429201353428355_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=7b2446&_nc_ohc=UQMxw45VangQ7kNvwGRmVeO&_nc_oc=Adr8zb2QshUVlVszAc3zGJz7HCXp1KCdV_B9OMHFPaUKncWSh2CLt0aota0nSNywTco&_nc_zt=23&_nc_ht=scontent-lim1-1.xx&_nc_gid=XEV_es6up5Rs-dAgVD7ung&_nc_ss=7b2a8&oh=00_Af1u1jnffPi7syhti8zmfvns0gYEZGWgGvvh5oXLuDerDw&oe=69F834B0",
-  },
-];
-
-const buildPostresInventory = () =>
-  postresBase.map((item, index) => ({
-    id: `seed-postre-${index + 1}`,
-    ...item,
-  }));
-
-const buildPastelesInventory = () =>
-  pastelesCatalog.map((item, index) => ({
-    id: `seed-pastel-${index + 1}`,
-    name: item.nombre,
-    category: item.categoria || "Pasteles",
-    price: Number(item.precio) || 0,
-    stock: 20,
-    image: item.img || "",
-  }));
-
-const buildPanesInventory = () =>
-  panesCatalog.map((item, index) => ({
-    id: `seed-pan-${index + 1}`,
-    name: item.title,
-    category: "Panes",
-    price: Number(item.price) || 0,
-    stock: 20,
-    image: item.img || "",
-  }));
+import { productService } from '../../services/productService';
+import api from '../../services/api';
 
 export default function AdminInventory() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterCategory, setFilterCategory] = useState("Todas");
+  const [filterStatus, setFilterStatus] = useState("Todos");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEditing, setCurrentEditing] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadInventory = () => {
-    const saved = localStorage.getItem('briselli_inventory');
-    const seededProducts = [
-      ...buildPostresInventory(),
-      ...buildPastelesInventory(),
-      ...buildPanesInventory(),
-    ];
+    const loadInventory = async () => {
+      try {
+        const [prodData, catData] = await Promise.all([
+          productService.getAllProductsAdmin(),
+          api.get('/categories').then(res => res.data)
+        ]);
 
-    if (!saved) {
-      setProducts(seededProducts);
-      localStorage.setItem('briselli_inventory', JSON.stringify(seededProducts));
-      return;
-    }
+        // Map backend products to frontend structure
+        const mappedProducts = prodData.map(p => ({
+          id: p.id,
+          name: p.name,
+          description: p.description || "",
+          category: p.categoryName || "Sin Categoría",
+          price: p.price,
+          stock: p.stock,
+          image: p.imageUrl || "",
+          originalProduct: p
+        }));
 
-    const parsed = JSON.parse(saved);
-    const merged = [...parsed];
-    const existingNames = new Set(parsed.map((item) => item.name?.toLowerCase?.()));
-
-    seededProducts.forEach((catalogProduct) => {
-      if (!existingNames.has(catalogProduct.name.toLowerCase())) {
-        merged.push(catalogProduct);
-      }
-    });
-
-    setProducts(merged);
-    localStorage.setItem('briselli_inventory', JSON.stringify(merged));
-    };
-
-    const onStorage = (event) => {
-      if (!event.key || event.key === 'briselli_inventory') {
-        loadInventory();
+        setProducts(mappedProducts);
+        setCategories(catData);
+      } catch (err) {
+        console.error("Error cargando inventario", err);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadInventory();
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
-  const saveAndSync = (list) => {
-    setProducts(list);
-    localStorage.setItem('briselli_inventory', JSON.stringify(list));
-  };
+  const handleSave = async (productData) => {
+    try {
+      // Find category ID based on the string name selected in the modal
+      const matchedCat = categories.find(c => c.name.toLowerCase() === String(productData.category || '').toLowerCase());
+      // fallback to 1 if not found
+      const categoryId = matchedCat ? matchedCat.id : (categories.length > 0 ? categories[0].id : 1);
 
-  const handleSave = (productData) => {
-    if (currentEditing) {
-      const updated = products.map(p => p.id === productData.id ? productData : p);
-      saveAndSync(updated);
-    } else {
-      saveAndSync([...products, productData]);
+      const payload = {
+        name: productData.name,
+        description: productData.description || "Delicioso producto de pastelería.",
+        price: Number(productData.price),
+        stock: Number(productData.stock),
+        imageUrl: productData.image,
+        categoryId: categoryId
+      };
+
+      if (currentEditing) {
+        const res = await productService.updateProduct(currentEditing.id, payload);
+        const updated = products.map(p => p.id === currentEditing.id ? {
+          ...p,
+          name: res.name,
+          description: res.description,
+          category: res.categoryName || "Sin Categoría",
+          price: res.price,
+          stock: res.stock,
+          image: res.imageUrl,
+          originalProduct: res
+        } : p);
+        setProducts(updated);
+      } else {
+        const res = await productService.createProduct(payload);
+        const newProd = {
+          id: res.id,
+          name: res.name,
+          description: res.description,
+          category: res.categoryName || "Sin Categoría",
+          price: res.price,
+          stock: res.stock,
+          image: res.imageUrl,
+          originalProduct: res
+        };
+        setProducts([...products, newProd]);
+      }
+    } catch (err) {
+      console.error("Error guardando producto:", err);
+      alert("Hubo un error al guardar el producto.");
     }
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este artículo de Briselli?")) {
-      const updated = products.filter(p => p.id !== id);
-      saveAndSync(updated);
+  const handleToggleStatus = async (id) => {
+    try {
+      const updatedProduct = await productService.toggleProductStatus(id);
+      const updated = products.map(p => p.id === id ? {
+        ...p,
+        originalProduct: updatedProduct
+      } : p);
+      setProducts(updated);
+    } catch (err) {
+      console.error("Error cambiando estado:", err);
+      alert("Hubo un error al cambiar el estado.");
     }
   };
 
-  const filteredProducts = products.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = (p.name || "").toLowerCase().includes(searchTerm.toLowerCase()) || (p.category || "").toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCat = filterCategory === "Todas" || p.category === filterCategory;
+    const matchesStatus = filterStatus === "Todos"
+      ? true
+      : (filterStatus === "Activos" ? p.originalProduct?.status !== 'INACTIVO' : p.originalProduct?.status === 'INACTIVO');
+    return matchesSearch && matchesCat && matchesStatus;
+  });
+
+  const exportToCSV = () => {
+    if (filteredProducts.length === 0) return alert("No hay datos para exportar");
+    const headers = ["ID", "Nombre", "Categoria", "Precio", "Stock", "Estado", "Descripcion"];
+    const csvContent = [
+      headers.join(','),
+      ...filteredProducts.map(p => [
+        `"${p.id}"`,
+        `"${String(p.name).replace(/"/g, '""')}"`,
+        `"${String(p.category).replace(/"/g, '""')}"`,
+        `"${p.price}"`,
+        `"${p.stock}"`,
+        `"${p.originalProduct?.status === 'INACTIVO' ? 'Inactivo' : 'Disponible'}"`,
+        `"${String(p.description || '').replace(/"/g, '""')}"`
+      ].join(','))
+    ].join('\n');
+
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `inventario_briselli.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64 animate-fadeIn">
+        <p className="text-xl font-bold text-artisan-primary">Cargando inventario maestro...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -155,24 +161,50 @@ export default function AdminInventory() {
           <h2 className="text-3xl font-black text-artisan-primary tracking-tighter">Inventario Maestro</h2>
           <p className="text-artisan-tertiary text-sm font-medium">Briselli: Gestión de Pasteles, Panes y Postres</p>
         </div>
-        <button 
-          onClick={() => { setCurrentEditing(null); setIsModalOpen(true); }}
-          className="bg-artisan-secondary text-white px-8 py-3 rounded-xl font-black shadow-lg hover:bg-artisan-primary hover:-translate-y-1 transition-all"
-        >
-          + AGREGAR PRODUCTO
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={exportToCSV}
+            className="bg-green-600 text-white px-6 py-3 rounded-xl font-black shadow-lg hover:bg-green-700 hover:-translate-y-1 transition-all"
+          >
+            📥 EXCEL
+          </button>
+          <button
+            onClick={() => { setCurrentEditing(null); setIsModalOpen(true); }}
+            className="bg-artisan-secondary text-white px-8 py-3 rounded-xl font-black shadow-lg hover:bg-artisan-primary hover:-translate-y-1 transition-all"
+          >
+            + AGREGAR PRODUCTO
+          </button>
+        </div>
       </div>
 
-      {/* Buscador */}
-      <div className="relative">
-        <input 
-          type="text"
-          placeholder="Buscar producto por nombre o categoría..."
-          className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm outline-none focus:ring-2 focus:ring-artisan-secondary transition-all"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl grayscale">🔍</span>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Buscar producto por nombre o categoría..."
+            className="w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm outline-none focus:ring-2 focus:ring-artisan-secondary transition-all"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl grayscale">🔍</span>
+        </div>
+        <select
+          value={filterCategory}
+          onChange={e => setFilterCategory(e.target.value)}
+          className="px-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm outline-none font-bold text-gray-600 focus:ring-2 focus:ring-artisan-secondary"
+        >
+          <option value="Todas">Todas las Categorías</option>
+          {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+        </select>
+        <select
+          value={filterStatus}
+          onChange={e => setFilterStatus(e.target.value)}
+          className="px-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm outline-none font-bold text-gray-600 focus:ring-2 focus:ring-artisan-secondary"
+        >
+          <option value="Todos">Todos los Estados</option>
+          <option value="Activos">Activos (Disponibles)</option>
+          <option value="Inactivos">Inactivos</option>
+        </select>
       </div>
 
       {/* Tabla */}
@@ -184,6 +216,7 @@ export default function AdminInventory() {
               <th className="p-5 border-b">Categoría</th>
               <th className="p-5 border-b">Precio</th>
               <th className="p-5 border-b">Stock</th>
+              <th className="p-5 border-b">Estado</th>
               <th className="p-5 border-b text-center">Acciones</th>
             </tr>
           </thead>
@@ -209,27 +242,34 @@ export default function AdminInventory() {
                     </span>
                   </td>
                   <td className="p-4 font-mono font-bold text-artisan-primary text-base">
-                    S/ {p.price.toFixed(2)}
+                    S/ {Number(p.price).toFixed(2)}
                   </td>
                   <td className="p-4">
                     <div className={`flex items-center gap-2 font-black ${p.stock < 5 ? 'text-red-500' : 'text-artisan-dark'}`}>
-                      {p.stock} 
+                      {p.stock}
                       {p.stock < 5 && <span className="text-[10px] animate-pulse">¡BAJO!</span>}
                     </div>
                   </td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 text-[10px] font-black uppercase rounded-lg border ${p.originalProduct?.status === 'INACTIVO' ? 'border-gray-200 text-gray-500 bg-gray-50' : 'border-green-200 text-green-600 bg-green-50'}`}>
+                      {p.originalProduct?.status === 'INACTIVO' ? 'Inactivo' : 'Disponible'}
+                    </span>
+                  </td>
                   <td className="p-4 text-center">
                     <div className="flex justify-center gap-4">
-                      <button 
+                      <button
                         onClick={() => { setCurrentEditing(p); setIsModalOpen(true); }}
                         className="p-2 hover:bg-artisan-secondary/10 rounded-lg transition-colors"
+                        title="Editar"
                       >
                         ✏️
                       </button>
-                      <button 
-                        onClick={() => handleDelete(p.id)}
-                        className="p-2 hover:bg-red-50 rounded-lg transition-colors grayscale hover:grayscale-0"
+                      <button
+                        onClick={() => handleToggleStatus(p.id)}
+                        className={`p-2 rounded-lg transition-colors grayscale hover:grayscale-0 ${p.originalProduct?.status === 'INACTIVO' ? 'hover:bg-green-50' : 'hover:bg-red-50'}`}
+                        title={p.originalProduct?.status === 'INACTIVO' ? 'Activar Producto' : 'Desactivar Producto'}
                       >
-                        🗑️
+                        {p.originalProduct?.status === 'INACTIVO' ? '🟢' : '🔴'}
                       </button>
                     </div>
                   </td>
@@ -246,9 +286,9 @@ export default function AdminInventory() {
         </table>
       </div>
 
-      <ProductModal 
-        isOpen={isModalOpen} 
-        onClose={() => { setIsModalOpen(false); setCurrentEditing(null); }} 
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => { setIsModalOpen(false); setCurrentEditing(null); }}
         onSave={handleSave}
         editingProduct={currentEditing}
       />
